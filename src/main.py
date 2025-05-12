@@ -16,19 +16,20 @@ import cv2
 import torch
 import numpy as np
 import logging
+import random
 
 # Configure logging (optional)
 logging.basicConfig(filename='training.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Augmentation config
 AUG_CONFIG = {
-    'horizontal_flip': True,
-    'rotation': 30,
-    'brightness': 0.5,
-    'blur': True,
-    'cutout': True,
-    'affine': True,
-    'clahe': True
+    'horizontal_flip': True,   # Safe and very useful
+    'rotation': 15,            # Small rotation to avoid bbox issues
+    'brightness': 0.2,         # Mild brightness change
+    'blur': False,             # Disable at first
+    'cutout': False,           # Disable at first
+    'affine': False,           # Disable at first
+    'clahe': False             # Disable at first
 }
 
 def inject_augmentations(trainer):
@@ -124,8 +125,8 @@ class ModelHandler:
 
 if __name__ == "__main__":
     # Control which head to use
-    use_mlp_head = False
-    use_transform_head = True  # Set to True to use the transformation head, False otherwise
+    use_mlp_head = True
+    use_transform_head = False#  # Set to True to use the transformation head, False otherwise
 
     # Ensure only one custom head is active
     if use_mlp_head and use_transform_head:
@@ -134,9 +135,9 @@ if __name__ == "__main__":
     # Training parameters
     training_params = {
         "data": "dataset.yaml",
-        "epochs": 1,
+        "epochs": 40,
         "imgsz": 640,
-        "batch": 4,
+        "batch": 16,
         "augment": False, # Custom augmentation
         "plots": True,
         "name": f"run_{'mlp' if use_mlp_head else ('transform' if use_transform_head else 'default')}"

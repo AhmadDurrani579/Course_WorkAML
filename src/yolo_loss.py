@@ -19,6 +19,8 @@ class CustomLoss(v8DetectionLoss):
     def forward(self, preds, batch):
         # Get default losses from parent class
         total_loss, (box_loss, cls_loss, dfl_loss) = super().forward(preds, batch)
+        print("Print the pred", preds)
+
         
         # ---------------------------------------------------
         # Enhanced Box Loss with EIoU

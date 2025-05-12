@@ -1,14 +1,26 @@
 import torch
 import torch.nn as nn
 from ultralytics.nn.modules import Conv
+import random
 
 
 class MLPBlock(nn.Module):
     def __init__(self, in_features, hidden_dim, out_features):
         super().__init__()
+        dropout_prob = random.uniform(0.0, 0.5)  # Example range for random dropout
         self.mlp = nn.Sequential(
             nn.Linear(in_features, hidden_dim),
             nn.ReLU(),
+            nn.Dropout(dropout_prob),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(dropout_prob),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(dropout_prob),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(dropout_prob),
             nn.Linear(hidden_dim, out_features)
         )
 
@@ -30,7 +42,6 @@ class ModifiedYOLOv8Head(nn.Module):
         self.convs = nn.ModuleList(nn.Conv2d(x, 256, 1) for x in ch[:-1])
         self.nl_convs = nn.ModuleList(nn.Conv2d(256 + ch[-1] if i > 0 else ch[-1], 256, 3, 1, 1) for i in range(self.nl))
         self.pred = nn.ModuleList(nn.Conv2d(256, self.no * self.na, 1) for _ in range(self.nl))
-
         first_stride = self.stride[0].item() if isinstance(self.stride, torch.Tensor) else self.stride[0]
         feature_map_size = 80 // int(first_stride)
         mlp_in_features = 256 * feature_map_size ** 2
