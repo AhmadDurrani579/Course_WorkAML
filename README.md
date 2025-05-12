@@ -6,7 +6,7 @@ This repository contains an implementation of a custom YOLOv8-based model for mi
 
 - YOLOv8 baseline implementation for aircraft detection
 - Custom head architectures including MLP and Transform variants
-- Augmentation pipeline with advanced transforms
+- Augmentation pipeline with advanced transforms 
 - Evaluation scripts for comparing model performance
 - Web-based inference interface with interactive visualization
 
